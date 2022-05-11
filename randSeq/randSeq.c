@@ -5,34 +5,35 @@
 #include <string.h>
 
 void ReadFromSource(int maxNumbers, int maxNumber, char* path)
-{
-	int bufferLength = 255;
-	char* buffer = malloc(bufferLength * sizeof(char));
-	int counter = 0;
-
-	// Open file
+{	// Open file
 	FILE* file = stdin;
+
+	int counter = 0;
+	int bufferLength = 255;
+
+	char* buffer = malloc(bufferLength * sizeof(char));
 
 	if (path) // - If not a nullpointer
 	{
-		file = fopen(path, "r"); // r --> read
+		file = fopen(path, "r"); // i --> read
 		if (file == NULL || !file)
 		{
-			//printf("Datei exisiert nicht");
-			perror("Datei exisiert nicht");
+			// Exit application with error message
+			perror("File does not exist. (Reverse)");
 			exit(EXIT_FAILURE);
 		}
 	}
 
-	while (fgets(buffer, bufferLength, file))			// Read line by line
+	while (fgets(buffer, bufferLength, file))			// Read file, line by line
 	{
+		int bufferAsInt = atoi(buffer); // Read and parse string to int
+
 		if (maxNumbers > 0 && counter == maxNumbers)
 			break;
 
-		int bufferAsInt = atoi(buffer); // Read and parse string to int
-
 		if (bufferAsInt > 0 && (bufferAsInt < maxNumber || maxNumber == -1))
 		{
+			// prints current number
 			printf("%d\n", bufferAsInt);
 			counter++;
 		}
@@ -47,7 +48,6 @@ void ReadFromSource(int maxNumbers, int maxNumber, char* path)
 /// <returns></returns>
 int main(int argc, char* argv[])
 {
-
 	// argc         Anzahl der Argummente
 	// argv[0] =    Name der Anwendung
 	// argv[1...n]  n Argumente
@@ -60,16 +60,18 @@ int main(int argc, char* argv[])
 	//printf("Start Rand_Seq_1\n");
 	//Sleep(8000);
 
+	// defaults
 	const* defaultPath = "DefaultNumbers.txt";
 	int defaultNummbers = 10;
 
+	// variables for args
 	const* path = malloc(255 * sizeof(char));
 	int numbers;
 	int maxNumber = -1;
 
 	if (argc > 4)
 	{
-		printf("Zu viele Argumente angebeben\n");
+		perror("To many arguments (Reverse)");
 		exit(EXIT_FAILURE);
 	}
 	else if (argc == 4) // Alle benötigten Parameter wurden übergeben
@@ -95,8 +97,9 @@ int main(int argc, char* argv[])
 		path = defaultPath;
 	}
 
-	//printf("ReadFromSource\n\n");
+	//
 	ReadFromSource(numbers, maxNumber, path);
 
+	// Exit application with success-code
 	exit(EXIT_SUCCESS);
 }

@@ -6,25 +6,26 @@
 
 void ReadFromSource(int maxNumbers, int maxNumber, char* path)
 {
-	int bufferLength = 255;
-	char* buffer = malloc(bufferLength * sizeof(char));
-	int counter = 0;
-
 	// Open file
 	FILE* file = stdin;
 
+	int counter = 0;
+	int bufferLength = 255;
+
+	char* buffer = malloc(bufferLength * sizeof(char));
+
 	if (path) // - If not a nullpointer
 	{
-		file = fopen(path, "r"); // r --> read
+		file = fopen(path, "r"); // i --> read
 		if (file == NULL || !file)
 		{
-			//printf("Datei exisiert nicht");
-			perror("Datei exisiert nicht (DoubleNumm)");
+			// Exit application with error message
+			perror("File does not exist. (Reverse)");
 			exit(EXIT_FAILURE);
 		}
 	}
 
-	while (fgets(buffer, bufferLength, file))			// Read line by line
+	while (fgets(buffer, bufferLength, file))			// Read file, line by line
 	{
 		if (maxNumbers > 0 && counter == maxNumbers)
 			break;
@@ -46,13 +47,14 @@ int main(int argc, char* argv[])
 	 //printf("Double_Num\n");
 	 //Sleep(8000);
 
+	// defaults
 	const* defaultPath = NULL;
 	int defaultNummbers = 10;
 
+	// variables for args
 	const* path = malloc(255 * sizeof(char));
 	int numbers;
 	int maxNumber = -1;
-
 
 	if (argc > 4)
 	{
@@ -81,8 +83,9 @@ int main(int argc, char* argv[])
 		path = defaultPath;
 	}
 
-	//printf("ReadFromFile\n\n");
+	//
 	ReadFromSource(numbers, maxNumber, path);
 
+	// Exit application with success-code
 	exit(EXIT_SUCCESS);
 }

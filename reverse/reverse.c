@@ -4,57 +4,81 @@
 #include <math.h>
 #include <string.h>
 
+/// <summary>
+/// Initialize Multi(MxN) Array for write pointer in pointer
+/// </summary>
+/// <param name="array"></param>
+/// <param name="arrayLength"></param>
+/// <param name="elementLength"></param>
+void initMultiArray(char** array, int arrayLength, int elementLength)
+{
+	// dynamically allocate memory of size `n` for each row
+	for (int i = 0; i < arrayLength; i++)
+	{
+		array[i] = (int*)calloc(elementLength, sizeof(char));
+	}
+}
+
 void ReadFromSource(int maxNumbers, int maxNumber, char* path)
 {
-	int bufferLength = 255;
-	char* buffer = malloc(bufferLength * sizeof(char));
-	int counter = 0;
-
-	int * reverseList = malloc(sizeof(int) * maxNumbers == -1 ? 65536 : maxNumbers); /* n is the length of the array */
-
 	// Open file
 	FILE* file = stdin;
 
+	int counter = 0;
+	int bufferLength = 255;
+
+	char* buffer = malloc(bufferLength * sizeof(char));
+	char** numbers = malloc(bufferLength * sizeof(char*));
+
+	// Init MultiArray
+	initMultiArray(numbers, maxNumber, bufferLength);
+
+
 	if (path) // - If not a nullpointer
 	{
-		file = fopen(path, "r"); // r --> read
+		file = fopen(path, "r"); // i --> read
 		if (file == NULL || !file)
 		{
-			//printf("Datei exisiert nicht");
-			perror("Datei exisiert nicht (DoubleNumm)");
+			// Exit application with error message
+			perror("File does not exist. (Reverse)");
 			exit(EXIT_FAILURE);
 		}
 	}
 
-	while (fgets(buffer, bufferLength, file))			// Read line by line
+	while (fgets(buffer, bufferLength, file))			// Read file, line by line
 	{
+		int bufferAsInt = atoi(buffer); // Read and parse string to int
+
 		if (maxNumbers > 0 && counter == maxNumbers)
 			break;
 
-		int bufferAsInt = atoi(buffer); // Read and parse string to int
-
+		// buffer must > 0 AND less maxNumber OR maxnumber equal -1
+		// -1 means infinite or until file terminates/ memory leaks
 		if (bufferAsInt > 0 && (bufferAsInt < maxNumber || maxNumber == -1))
 		{
-			reverseList[counter] = bufferAsInt;
-			counter++;
+			// copy buffer with new ref at starting pointer at index counter
+			strcpy(numbers[counter++], buffer);
 		}
 	}
-	for (int i = counter-1; i>= 0; i--)
+
+	// print the list of numbers in reverse order
+	for (int i = counter - 1; i >= 0; i--)
 	{
-		int temp = reverseList[i];
-		printf("%d\n", temp);
+		printf("%s", numbers[i]);
 	}
 }
 
 int main(int argc, char* argv[])
 {
 	// Enable to attach with debugger
-	 //printf("Double_Num\n");
-	 //Sleep(8000);
+	//printf("Double_Num\elementLength");
+	//Sleep(8000);
 
+	// defaults
 	const* defaultPath = NULL;
 	int defaultNummbers = 10;
 
+	// variables for args
 	const* path = malloc(255 * sizeof(char));
 	int numbers;
 	int maxNumber = -1;
@@ -86,8 +110,9 @@ int main(int argc, char* argv[])
 		path = defaultPath;
 	}
 
-	//printf("ReadFromFile\n\n");
+	//
 	ReadFromSource(numbers, maxNumber, path);
 
+	// Exit application with success-code
 	exit(EXIT_SUCCESS);
 }
