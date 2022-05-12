@@ -45,7 +45,7 @@ void ReadFromSource(int maxNumbers, int maxNumber, char* path)
 		}
 	}
 
-	while (fgets(buffer, bufferLength, file))			// Read file, line by line
+	while (fgets(buffer, bufferLength, file)) // Read file, line by line
 	{
 		int bufferAsInt = atoi(buffer); // Read and parse string to int
 
@@ -104,11 +104,18 @@ int main(int argc, char* argv[])
 		numbers = atoi(argv[1]);
 		path = defaultPath;
 	}
-	else // keine extra Parameter --> Verwende default Werte
+	else
 	{
 		numbers = defaultNummbers;
 		path = defaultPath;
 	}
+
+	// case: param char* instead of int
+	if (numbers == 0)
+		numbers = defaultNummbers;
+
+	if (maxNumber == 0)
+		maxNumber = -1;
 
 	//
 	ReadFromSource(numbers, maxNumber, path);

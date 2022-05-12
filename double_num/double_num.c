@@ -77,11 +77,18 @@ int main(int argc, char* argv[])
 		numbers = atoi(argv[1]);
 		path = defaultPath;
 	}
-	else // keine extra Parameter --> Verwende default Werte
+	else
 	{
 		numbers = defaultNummbers;
 		path = defaultPath;
 	}
+
+	// case: param char* instead of int
+	if (numbers == 0)
+		numbers = defaultNummbers;
+
+	if (maxNumber == 0)
+		maxNumber = -1;
 
 	//
 	ReadFromSource(numbers, maxNumber, path);
